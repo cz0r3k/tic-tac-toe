@@ -2,6 +2,8 @@ use array2d::Array2D;
 use std::cmp;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
+mod errors;
+use errors::*;
 
 const ROW: usize = 3;
 const COLUMN: usize = 3;
@@ -15,12 +17,6 @@ pub struct Game {
     board: Array2D<Option<Player>>,
     turn: Player,
     winner: Option<Player>,
-}
-pub enum GameError {
-    DiffrentPlayerTurn,
-    OutOfBounds,
-    FieldOccupied,
-    GameEnded,
 }
 
 impl Default for Game {
