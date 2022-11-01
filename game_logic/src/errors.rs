@@ -3,7 +3,7 @@ use snafu::prelude::*;
 #[derive(Debug, Snafu)]
 pub enum GameError {
     #[snafu(display("Diffrent player turn"))]
-    DiffrentPlayerTurn,
+    DifferentPlayerTurn,
     #[snafu(display("Diffrent player turn"))]
     OutOfBounds,
     #[snafu(display("Field is just occipied"))]
