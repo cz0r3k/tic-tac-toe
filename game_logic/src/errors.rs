@@ -2,11 +2,11 @@ use snafu::prelude::*;
 
 #[derive(Debug, Snafu)]
 pub enum GameError {
-    #[snafu(display("Diffrent player turn"))]
+    #[snafu(display("Different player turn"))]
     DifferentPlayerTurn,
-    #[snafu(display("Diffrent player turn"))]
+    #[snafu(display("Out of bounds"))]
     OutOfBounds,
-    #[snafu(display("Field is just occipied"))]
+    #[snafu(display("Field is just occupied"))]
     FieldOccupied,
     #[snafu(display("Game is just ended"))]
     GameEnded,
