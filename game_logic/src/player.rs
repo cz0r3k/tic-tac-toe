@@ -1,6 +1,6 @@
-pub use crate::game::Game;
-use crate::game::GameError;
-pub use crate::player_enum::PlayerEnum;
+use crate::errors::GameError;
+use crate::game::Game;
+use crate::player_enum::PlayerEnum;
 
 pub struct Player {
     player_enum: PlayerEnum,

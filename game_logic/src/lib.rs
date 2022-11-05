@@ -1,7 +1,5 @@
-pub use crate::game::Game;
-pub use crate::player::Player;
-
-mod errors;
-mod game;
-mod player;
-mod player_enum;
+pub mod errors;
+pub mod game;
+mod game_board;
+pub mod player;
+pub mod player_enum;
