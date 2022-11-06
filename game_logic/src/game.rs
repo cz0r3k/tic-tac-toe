@@ -25,6 +25,16 @@ impl Game {
     fn set_winner(&mut self) {
         self.winner = self.board.check_all();
     }
+    fn change_player_turn(&mut self) {
+        match self.turn {
+            PlayerEnum::X => {
+                self.turn = PlayerEnum::O;
+            }
+            PlayerEnum::O => {
+                self.turn = PlayerEnum::X;
+            }
+        }
+    }
     pub fn get_winner(&self) -> Option<PlayerEnum> {
         self.winner
     }
@@ -43,6 +53,7 @@ impl Game {
         }
         self.board.set(x, y, Some(self.turn))?;
         self.set_winner();
+        self.change_player_turn();
         Ok(())
     }
 }
