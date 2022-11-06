@@ -1,6 +1,9 @@
 use crate::errors::GameError;
 use crate::game_board::GameBoard;
-use crate::player_enum::{map_char_on_option_player_enum, map_char_on_player_enum, PlayerEnum};
+use crate::player_enum::{
+    map_char_on_option_player_enum, map_char_on_player_enum, map_option_player_enum_on_char,
+    map_player_enum_on_char, PlayerEnum,
+};
 
 pub struct Game {
     board: GameBoard,
@@ -18,8 +21,8 @@ impl Default for Game {
     }
 }
 
-impl From<&str> for Game {
-    fn from(s: &str) -> Self {
+impl From<String> for Game {
+    fn from(s: String) -> Self {
         let mut it = s.split(';');
         let turn = it
             .next()
@@ -37,12 +40,20 @@ impl From<&str> for Game {
             .take(1)
             .next()
             .unwrap();
-        let board = GameBoard::from(it.next().unwrap());
+        let board = GameBoard::from(String::from(it.next().unwrap()));
         Game {
             board,
             turn,
             winner,
         }
+    }
+}
+impl From<Game> for String {
+    fn from(game: Game) -> Self {
+        let board: String = game.board.into();
+        let turn = map_player_enum_on_char(&game.turn);
+        let winner = map_option_player_enum_on_char(&game.winner);
+        format!("{};{};{}", turn, winner, board)
     }
 }
 

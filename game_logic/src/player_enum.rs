@@ -21,10 +21,23 @@ pub fn map_char_on_player_enum(ch: char) -> PlayerEnum {
         _ => panic!(),
     }
 }
+pub fn map_player_enum_on_char(player: &PlayerEnum) -> char {
+    match player {
+        PlayerEnum::X => 'X',
+        PlayerEnum::O => 'O',
+    }
+}
 pub fn map_char_on_option_player_enum(ch: char) -> Option<PlayerEnum> {
     match ch {
         'N' => None,
         'O' | 'X' => Some(PlayerEnum::from(ch)),
         _ => panic!(),
+    }
+}
+pub fn map_option_player_enum_on_char(player: &Option<PlayerEnum>) -> char {
+    match player {
+        Some(PlayerEnum::X) => 'X',
+        Some(PlayerEnum::O) => 'O',
+        None => 'N',
     }
 }

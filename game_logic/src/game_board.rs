@@ -1,5 +1,7 @@
 use crate::errors::GameError;
-use crate::player_enum::{map_char_on_option_player_enum, PlayerEnum};
+use crate::player_enum::{
+    map_char_on_option_player_enum, map_option_player_enum_on_char, PlayerEnum,
+};
 use array2d::Array2D;
 use std::cmp;
 use strum::IntoEnumIterator;
@@ -17,8 +19,22 @@ impl Default for GameBoard {
         }
     }
 }
-impl From<&str> for GameBoard {
-    fn from(s: &str) -> Self {
+
+impl From<GameBoard> for String {
+    fn from(game_board: GameBoard) -> Self {
+        let x = game_board.board.num_rows().to_string();
+        let y = game_board.board.num_columns().to_string();
+        let board = game_board
+            .board
+            .elements_row_major_iter()
+            .map(map_option_player_enum_on_char)
+            .collect::<String>();
+        format!("{}:{}:{}", x, y, board)
+    }
+}
+
+impl From<String> for GameBoard {
+    fn from(s: String) -> Self {
         let mut it = s.split(':');
         let x = it.next().unwrap().parse::<usize>().unwrap();
         let y = it.next().unwrap().parse::<usize>().unwrap();
