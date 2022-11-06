@@ -1,11 +1,11 @@
 use crate::errors::GameError;
-use crate::player_enum::PlayerEnum;
+use crate::player_enum::{map_char_on_option_player_enum, PlayerEnum};
 use array2d::Array2D;
 use std::cmp;
 use strum::IntoEnumIterator;
 
-const ROW: usize = 3;
-const COLUMN: usize = 3;
+const DEFAULT_ROW_SIZE: usize = 3;
+const DEFAULT_COLUMN_SIZE: usize = 3;
 
 pub struct GameBoard {
     board: Array2D<Option<PlayerEnum>>,
@@ -13,11 +13,31 @@ pub struct GameBoard {
 impl Default for GameBoard {
     fn default() -> Self {
         GameBoard {
-            board: Array2D::filled_with(None, ROW, COLUMN),
+            board: Array2D::filled_with(None, DEFAULT_ROW_SIZE, DEFAULT_COLUMN_SIZE),
+        }
+    }
+}
+impl From<&str> for GameBoard {
+    fn from(s: &str) -> Self {
+        let mut it = s.split(':');
+        let x = it.next().unwrap().parse::<usize>().unwrap();
+        let y = it.next().unwrap().parse::<usize>().unwrap();
+        let mut board = it
+            .next()
+            .unwrap()
+            .chars()
+            .map(map_char_on_option_player_enum);
+        GameBoard {
+            board: Array2D::filled_by_row_major(|| board.next().unwrap(), x, y),
         }
     }
 }
 impl GameBoard {
+    pub fn new(x: usize, y: usize) -> Self {
+        GameBoard {
+            board: Array2D::filled_with(None, x, y),
+        }
+    }
     fn check_rows(&self) -> Option<PlayerEnum> {
         for player in PlayerEnum::iter() {
             for row in self.board.rows_iter() {
@@ -46,7 +66,7 @@ impl GameBoard {
                 return Some(player);
             }
             if (0..cmp::min(self.board.column_len(), self.board.row_len()))
-                .all(|i| *self.board.get(i, COLUMN - i - 1).unwrap() == Some(player))
+                .all(|i| *self.board.get(i, DEFAULT_COLUMN_SIZE - i - 1).unwrap() == Some(player))
             {
                 return Some(player);
             }
