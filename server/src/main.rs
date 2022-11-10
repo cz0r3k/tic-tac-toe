@@ -14,17 +14,18 @@ const MAX_USER_IN_QUEUE: usize = 2;
 
 fn handle_connection(stream: TcpStream, con_struct: Arc<(Mutex<usize>, Condvar)>) {
     let (connections, cvar) = &*con_struct;
-    let mut con = connections.lock().unwrap();
-    *con += 1;
-    Mutex::unlock(con);
-
+    {
+        let mut connections = connections.lock().unwrap();
+        *connections += 1;
+        Mutex::unlock(connections);
+    }
     let mut input = String::new();
     let mut reader = BufReader::new(stream.try_clone().unwrap());
     loop {
         match reader.read_line(&mut input) {
             Ok(0) => {
-                let mut con = connections.lock().unwrap();
-                *con -= 1;
+                let mut connections = connections.lock().unwrap();
+                *connections -= 1;
                 cvar.notify_one();
                 break;
             }
@@ -32,7 +33,12 @@ fn handle_connection(stream: TcpStream, con_struct: Arc<(Mutex<usize>, Condvar)>
                 print!("{}:{}", stream.peer_addr().unwrap(), input);
                 input.clear();
             }
-            Err(_e) => {}
+            Err(_e) => {
+                let mut connections = connections.lock().unwrap();
+                *connections -= 1;
+                cvar.notify_one();
+                break;
+            }
         }
     }
 }
