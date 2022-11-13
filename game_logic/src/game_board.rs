@@ -1,7 +1,6 @@
 use crate::errors::GameError;
-use crate::player_enum::{
-    map_char_on_option_player_enum, map_option_player_enum_on_char, PlayerEnum,
-};
+use crate::player_enum::*;
+use crate::player_move::Move;
 use array2d::Array2D;
 use std::cmp;
 use strum::IntoEnumIterator;
@@ -12,6 +11,7 @@ const DEFAULT_COLUMN_SIZE: usize = 3;
 pub struct GameBoard {
     board: Array2D<Option<PlayerEnum>>,
 }
+
 impl Default for GameBoard {
     fn default() -> Self {
         GameBoard {
@@ -48,6 +48,7 @@ impl From<String> for GameBoard {
         }
     }
 }
+
 impl GameBoard {
     pub fn new(x: usize, y: usize) -> Self {
         GameBoard {
@@ -104,14 +105,21 @@ impl GameBoard {
         }
         None
     }
-    pub fn get(&self, x: usize, y: usize) -> Result<&Option<PlayerEnum>, GameError> {
-        match self.board.get(x, y) {
+    pub fn check_full(&self) -> bool {
+        !self.board.as_column_major().iter().any(|&x| x.is_none())
+    }
+    pub fn get(&self, player_move: &Move) -> Result<&Option<PlayerEnum>, GameError> {
+        match self.board.get(player_move.get_x(), player_move.get_y()) {
             Some(player_enum) => Ok(player_enum),
             None => Err(GameError::OutOfBounds),
         }
     }
-    pub fn set(&mut self, x: usize, y: usize, player: Option<PlayerEnum>) -> Result<(), GameError> {
-        match self.board.set(x, y, player) {
+    pub fn set(&mut self, player_move: &Move) -> Result<(), GameError> {
+        match self.board.set(
+            player_move.get_x(),
+            player_move.get_y(),
+            player_move.get_player_option(),
+        ) {
             Ok(..) => Ok(()),
             Err(..) => Err(GameError::OutOfBounds),
         }

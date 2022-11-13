@@ -1,5 +1,5 @@
 pub mod errors;
 pub mod game;
-mod game_board;
-pub mod player;
+pub mod game_board;
 pub mod player_enum;
+pub mod player_move;

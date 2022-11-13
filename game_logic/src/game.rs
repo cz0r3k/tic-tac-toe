@@ -1,14 +1,13 @@
 use crate::errors::GameError;
 use crate::game_board::GameBoard;
-use crate::player_enum::{
-    map_char_on_option_player_enum, map_char_on_player_enum, map_option_player_enum_on_char,
-    map_player_enum_on_char, PlayerEnum,
-};
+use crate::player_enum::*;
+use crate::player_move::Move;
 
 pub struct Game {
     board: GameBoard,
     turn: PlayerEnum,
     winner: Option<PlayerEnum>,
+    end: bool,
 }
 
 impl Default for Game {
@@ -17,6 +16,7 @@ impl Default for Game {
             board: GameBoard::default(),
             turn: PlayerEnum::X,
             winner: None,
+            end: false,
         }
     }
 }
@@ -40,11 +40,24 @@ impl From<String> for Game {
             .take(1)
             .next()
             .unwrap();
+        let end = it
+            .next()
+            .unwrap()
+            .chars()
+            .map(|x| match x {
+                '0' => false,
+                '1' => true,
+                _ => false,
+            })
+            .take(1)
+            .next()
+            .unwrap();
         let board = GameBoard::from(String::from(it.next().unwrap()));
         Game {
             board,
             turn,
             winner,
+            end,
         }
     }
 }
@@ -53,7 +66,11 @@ impl From<Game> for String {
         let board: String = game.board.into();
         let turn = map_player_enum_on_char(&game.turn);
         let winner = map_option_player_enum_on_char(&game.winner);
-        format!("{};{};{}", turn, winner, board)
+        let end = match game.end {
+            true => '1',
+            false => '0',
+        };
+        format!("{};{};{};{}", turn, winner, end, board)
     }
 }
 
@@ -63,6 +80,7 @@ impl Game {
             board: GameBoard::new(x, y),
             turn: PlayerEnum::X,
             winner: None,
+            end: false,
         }
     }
     fn set_winner(&mut self) {
@@ -81,21 +99,30 @@ impl Game {
     pub fn get_winner(&self) -> Option<PlayerEnum> {
         self.winner
     }
+    pub fn get_end(&self) -> bool {
+        self.end
+    }
+    fn set_end(&mut self) {
+        self.set_winner();
+        if self.winner.is_some() || self.board.check_full() {
+            self.end = true;
+        }
+    }
     pub fn get_turn(&self) -> PlayerEnum {
         self.turn
     }
-    pub fn make_move(&mut self, x: usize, y: usize, player: PlayerEnum) -> Result<(), GameError> {
-        if self.get_winner() != None {
+    pub fn make_move(&mut self, player_move: Move) -> Result<(), GameError> {
+        if self.get_winner().is_some() || self.get_end() {
             return Err(GameError::GameEnded);
         }
-        if player != self.turn {
+        if player_move.get_player_option() != Some(self.turn) {
             return Err(GameError::DifferentPlayerTurn);
         }
-        if *self.board.get(x, y)? != None {
+        if (self.board.get(&player_move)?).is_some() {
             return Err(GameError::FieldOccupied);
         }
-        self.board.set(x, y, Some(self.turn))?;
-        self.set_winner();
+        self.board.set(&player_move)?;
+        self.set_end();
         self.change_player_turn();
         Ok(())
     }
