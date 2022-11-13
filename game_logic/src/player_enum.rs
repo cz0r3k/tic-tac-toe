@@ -41,3 +41,10 @@ pub fn map_option_player_enum_on_char(player: &Option<PlayerEnum>) -> char {
         None => 'N',
     }
 }
+pub fn from_num_to_player_enum(num: usize) -> Option<PlayerEnum> {
+    match num {
+        0 => Some(PlayerEnum::X),
+        1 => Some(PlayerEnum::O),
+        _ => None,
+    }
+}
