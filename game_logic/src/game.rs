@@ -3,6 +3,7 @@ use crate::game_board::GameBoard;
 use crate::player_enum::*;
 use crate::player_move::Move;
 
+#[derive(Clone)]
 pub struct Game {
     board: GameBoard,
     turn: PlayerEnum,
@@ -107,6 +108,11 @@ impl Game {
         if self.winner.is_some() || self.board.check_full() {
             self.end = true;
         }
+    }
+    pub fn player_surender(&mut self, player: &PlayerEnum) -> Result<(), GameError> {
+        self.end = true;
+        self.winner = Some(different_player_enum(player));
+        Ok(())
     }
     pub fn get_turn(&self) -> PlayerEnum {
         self.turn

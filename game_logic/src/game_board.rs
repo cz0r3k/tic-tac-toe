@@ -8,6 +8,7 @@ use strum::IntoEnumIterator;
 const DEFAULT_ROW_SIZE: usize = 3;
 const DEFAULT_COLUMN_SIZE: usize = 3;
 
+#[derive(Clone)]
 pub struct GameBoard {
     board: Array2D<Option<PlayerEnum>>,
 }

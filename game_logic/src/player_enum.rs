@@ -48,3 +48,9 @@ pub fn from_num_to_player_enum(num: usize) -> Option<PlayerEnum> {
         _ => None,
     }
 }
+pub fn different_player_enum(player: &PlayerEnum) -> PlayerEnum {
+    match player {
+        PlayerEnum::X => PlayerEnum::O,
+        PlayerEnum::O => PlayerEnum::X,
+    }
+}
