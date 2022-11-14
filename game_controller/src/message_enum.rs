@@ -8,6 +8,7 @@ pub enum MessageFromGame {
     PlayerTurn,       //PT
     Win(PlayerEnum),  //W|X W|O
     Error(GameError), //GE|'GameError Signature'
+    GameError,        //ER
 }
 pub enum MessageFromPlayer {
     Move(Move),         //M|'Move Signature'

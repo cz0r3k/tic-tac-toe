@@ -117,17 +117,17 @@ impl Game {
     pub fn get_turn(&self) -> PlayerEnum {
         self.turn
     }
-    pub fn make_move(&mut self, player_move: Move) -> Result<(), GameError> {
+    pub fn make_move(&mut self, player_move: &Move) -> Result<(), GameError> {
         if self.get_winner().is_some() || self.get_end() {
             return Err(GameError::GameEnded);
         }
         if player_move.get_player_option() != Some(self.turn) {
             return Err(GameError::DifferentPlayerTurn);
         }
-        if (self.board.get(&player_move)?).is_some() {
+        if (self.board.get(player_move)?).is_some() {
             return Err(GameError::FieldOccupied);
         }
-        self.board.set(&player_move)?;
+        self.board.set(player_move)?;
         self.set_end();
         self.change_player_turn();
         Ok(())
