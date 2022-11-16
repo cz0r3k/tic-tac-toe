@@ -78,7 +78,7 @@ impl PlayerController {
     }
     fn map_to_message(s: String) -> MessageFromPlayer {
         let re1 = Regex::new(r"GE\|(.+)").unwrap();
-        let re2 = Regex::new(r"(M\|.+)").unwrap();
+        let re2 = Regex::new(r"M\|(.+)").unwrap();
         if re1.is_match(&s) {
             let res = re1.captures(&s).unwrap();
             return GiveUp(PlayerEnum::from(String::from(res.get(0).unwrap().as_str())));
