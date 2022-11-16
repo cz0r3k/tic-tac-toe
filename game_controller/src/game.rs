@@ -63,8 +63,8 @@ impl GameController {
             }
         }
 
-        let join_handle1 = thread::spawn(move || PlayerController::run(player1.unwrap()));
-        let join_handle2 = thread::spawn(move || PlayerController::run(player2.unwrap()));
+        let join_handle1 = thread::spawn(move || player1.unwrap().run());
+        let join_handle2 = thread::spawn(move || player2.unwrap().run());
 
         self.to_player[start_player]
             .send(MessageFromGame::PlayerTurn)

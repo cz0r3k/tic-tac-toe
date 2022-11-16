@@ -6,6 +6,18 @@ pub struct Move {
     player: PlayerEnum,
 }
 
+impl From<String> for Move {
+    fn from(_s: String) -> Self {
+        todo!()
+    }
+}
+
+impl From<Move> for String {
+    fn from(_player_move: Move) -> Self {
+        todo!()
+    }
+}
+
 impl Move {
     pub fn new(x: usize, y: usize, player: PlayerEnum) -> Move {
         Move { x, y, player }

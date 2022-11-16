@@ -15,6 +15,15 @@ impl From<char> for PlayerEnum {
         }
     }
 }
+impl From<String> for PlayerEnum {
+    fn from(s: String) -> Self {
+        match s.as_str() {
+            "O" => PlayerEnum::O,
+            "X" => PlayerEnum::X,
+            _ => panic!(),
+        }
+    }
+}
 pub fn map_char_on_player_enum(ch: char) -> PlayerEnum {
     match ch {
         'O' | 'X' => PlayerEnum::from(ch),

@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 game_logic = { path = "../game_logic" }
 rand = "*"
+regex = "*"
